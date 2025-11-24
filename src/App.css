@@ -51,3 +51,7 @@
   color: white;
   border-color: #007bff;
 }
+.search-box {
+  width: 300px;
+  margin: 0 auto;
+}

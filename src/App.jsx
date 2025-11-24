@@ -36,14 +36,24 @@ useEffect(() => {
     ) 
   ); 
 }; 
+ const [searchQuery, setSearchQuery] = useState(''); 
 
+ 
   const [activeFilter, setActiveFilter] = useState('all');
 
   const filteredTechnologies = technologies.filter(tech => {
-    if (activeFilter === 'all') return true;
-    return tech.status === activeFilter;
-  });
-  
+  const matchesSearch = searchQuery
+    ? tech.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      tech.description.toLowerCase().includes(searchQuery.toLowerCase())
+    : true;
+    
+  const matchesFilter = activeFilter === 'all'
+    ? true
+    : tech.status === activeFilter;
+
+  return matchesSearch && matchesFilter;
+});
+
   const updateTechnologyStatus = (id) => {
     setTechnologies(prevTechnologies =>
       prevTechnologies.map(tech =>
@@ -94,6 +104,15 @@ useEffect(() => {
           onSelectRandom={selectRandomTechnology}
         />
       </div>
+       <div className="search-box"> 
+<input 
+type="text" 
+placeholder="Поиск технологий..." 
+value={searchQuery} 
+onChange={(e) => setSearchQuery(e.target.value)} 
+  /> 
+<span>Найдено:{filteredTechnologies.length}</span>
+ </div>
       <div className="technology-list">
         <h2>Список задач</h2>
          <div className="filter-buttons">
