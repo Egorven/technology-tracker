@@ -3,7 +3,8 @@ import './App.css';
 import TechnologyCard from './components/TechnologyCard';
 import ProgressHeader from './components/ProgressHeader';
 import QuickActions from './components/QuickActions';
-import { useState } from 'react';
+import TechnologyNotes from './components/TechnologyNotes';
+import { useState, useEffect} from 'react';
 
 function App() {
   const [technologies, setTechnologies] = useState([
@@ -11,21 +12,44 @@ function App() {
       id: 1, 
       title: 'React Components', 
       description: 'Изучение базовых компонентов',
-      status: 'completed'
+      status: 'completed',
+      notes: 'hex'
     },
     {
       id: 2, 
       title: 'JSX Syntax', 
       description: 'Освоение синтаксиса JSX', 
-      status: 'in-progress'
+      status: 'in-progress',
+      notes: 'sdaasda'
     },
     {
       id: 3, 
       title: 'State Management', 
       description: 'Работа с состоянием компонентов', 
-      status: 'not-started'
+      status: 'not-started',
+      notes: 'sdaasda'
     }
   ]);
+
+
+ useEffect(() => { 
+  localStorage.setItem('techTrackerData', JSON.stringify(technologies)); 
+console.log('Данные сохранены в localStorage'); 
+}, [technologies]);
+useEffect(() => { 
+const saved = localStorage.getItem('techTrackerData'); 
+if (saved) { 
+    setTechnologies(JSON.parse(saved)); 
+console.log('Данные загружены из localStorage'); 
+  } 
+}, []);
+  const updateTechnologyNotes = (techId, newNotes) => { 
+  setTechnologies(prevTech =>  
+    prevTech.map(tech =>  
+      tech.id === techId ? { ...tech, notes: newNotes } : tech 
+    ) 
+  ); 
+}; 
 
   const [activeFilter, setActiveFilter] = useState('all');
 
@@ -118,8 +142,10 @@ function App() {
             id={technology.id}
             title={technology.title}
             description={technology.description}
+            notes={technology.notes}
             status={technology.status}
             onUpdateStatus={updateTechnologyStatus}
+            onNotesChange={updateTechnologyNotes}
           />
         ))}
       </div>
